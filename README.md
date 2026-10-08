@@ -33,6 +33,65 @@ This repository processes order flow telemetry to model how non-linear trader be
 
 ---
 
+## Datasets & Data Pipeline
+
+The matching engine integrates high-frequency limit order book (LOB) microdata alongside socio-demographic microdata to calibrate behavioral trauma decay and market microstructure volatility parameters.
+
+### 1. High-Frequency Market Microstructure Data
+
+* **Dataset:** [Optiver Realized Volatility Prediction](https://www.kaggle.com/competitions/optiver-realized-volatility-prediction/data)
+* **Source:** Kaggle / Optiver (2021)
+* **Direct Access:** [![Kaggle](https://img.shields.io/badge/Kaggle-Dataset_Page-20BEFF?style=flat-square&logo=kaggle&logoColor=white)](https://www.kaggle.com/competitions/optiver-realized-volatility-prediction/data)
+* **Scale:** 2.73 GB (229 files in Apache Parquet & CSV format)
+* **Resolution:** 1-second interval order book snapshots and trade execution logs
+
+#### Data Schema Breakdown
+| File / Component | Key Fields | Description |
+| :--- | :--- | :--- |
+| `book_[train/test].parquet` | `stock_id`, `time_id`, `seconds_in_bucket`, `bid_price1/2`, `ask_price1/2`, `bid_size1/2`, `ask_size1/2` | Top-2 depth levels of the order book. Captures order book imbalance, bid-ask spread dynamics, and liquidity depth. |
+| `trade_[train/test].parquet` | `stock_id`, `time_id`, `seconds_in_bucket`, `price`, `size`, `order_count` | Executed market transactions. Used to compute realized order flow toxicity and volume-weighted trade impact. |
+| `train.csv` / `test.csv` | `stock_id`, `time_id`, `target` | Ground-truth 10-minute realized volatility target values: $\sigma = \sqrt{\sum_{t} r_t^2}$ |
+
+**Citation**
+
+```
+@misc{optiver2021realizedvolatility,
+  author    = {Meyer, Andrew and BerniceOptiver and CameronOptiver and IXAGPOPU and Liu, Jiashen and Pietrobon, Matteo and OptiverMerle and Dane, Sohier and Vallentine, Stefan},
+  title     = {Optiver Realized Volatility Prediction},
+  year      = {2021},
+  publisher = {Kaggle},
+  url       = {[https://www.kaggle.com/competitions/optiver-realized-volatility-prediction](https://www.kaggle.com/competitions/optiver-realized-volatility-prediction)}
+}
+```
+
+### 2. Socio-Demographic & Household Microdata
+
+* **Dataset:** [2015 American Community Survey (ACS) Public Use Microdata Sample](https://www.kaggle.com/datasets/census/2015-american-community-survey)
+* **Source:** U.S. Census Bureau / Kaggle Data Hub
+* **Direct Access:** [![Kaggle](https://img.shields.io/badge/Kaggle-Dataset_Page-20BEFF?style=flat-square&logo=kaggle&logoColor=white)](https://www.kaggle.com/datasets/census/2015-american-community-survey)
+* **License:** Public Domain (CC0)
+* **Granularity:** Individual and household-level microdata
+
+#### Data Schema Breakdown
+| Feature Category | Key Fields | Description |
+| :--- | :--- | :--- |
+| **Cohort Weighting** | `PWGTP` | Person-level expansion weights applied for accurate population-level demographic synthesis. |
+| **Economic Indicators** | Income, Employment, Demographics | Microdata variables used to model household financial cushions, liquidity constraints, and time-preference decay. |
+
+**Citation**
+
+```
+@misc{us_census_acs_2015,
+  author    = {U.S. Census Bureau},
+  title     = {2015 American Community Survey Public Use Microdata Sample},
+  year      = {2015},
+  publisher = {Kaggle Data Hub},
+  url       = {[https://www.kaggle.com/datasets/census/2015-american-community-survey](https://www.kaggle.com/datasets/census/2015-american-community-survey)}
+}
+```
+
+---
+
 ## Microstructure & Matching Pipeline
 
 ```mermaid
