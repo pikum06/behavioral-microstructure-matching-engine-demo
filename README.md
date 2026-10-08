@@ -1,7 +1,5 @@
 # Behavioral Microstructure Matching Engine
 
----
-
 ## Research & IP Disclosure
 
 **NOTICE:**
@@ -9,6 +7,7 @@
 This repository contains the outcome exhibits, visualization pipelines, and documentation for the Behavioral-Microstructure Matching Framework. The underlying feature encoders and optimization engine are maintained in a private repository pending intellectual property filings.
 
 ---
+**ABOUT**
 
 An analytical research framework and visual execution suite engineered to evaluate high-frequency market microstructure dynamics, limit order book (LOB) queue priority, and behavioral liquidity matching matrices across volatile trading regimes.
 
